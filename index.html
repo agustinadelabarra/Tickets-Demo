@@ -499,7 +499,7 @@ body.modo-simple .toggle:has(#asiste),body.modo-simple .tg-comp,body.modo-simple
   <div class="caja-t">
     <h2>Gala Candle Night</h2>
     <p>Venta de entradas y donaciones desde el celular, con panel para los organizadores.</p>
-    <button class="t-prim" type="button" data-tour-iniciar>▶ Ver demo automática (3 min)</button>
+    <button class="t-prim" type="button" data-tour-iniciar>▶ Ver demo automática (2 min)</button>
     <button class="t-sec" type="button" id="tour-yo" onclick="try{sessionStorage.setItem('gala_demo_bienvenida','1')}catch(e){};document.getElementById('tour-bienvenida').hidden=true">Probarla yo</button>
   </div>
 </div>
@@ -512,7 +512,7 @@ body.modo-simple .toggle:has(#asiste),body.modo-simple .tg-comp,body.modo-simple
       <li>Mercado Pago y transferencia</li>
       <li>Entradas con código para cada asistente</li>
       <li>Panel de control de pagos y llegadas</li>
-      <li>Donaciones y reportes exportables</li>
+      <li>Reportes exportables a Excel</li>
     </ul>
     <button class="t-prim" type="button" id="tour-probar">Probarla yo</button>
     <button class="t-sec" type="button" id="tour-otra">↺ Ver la demo de nuevo</button>
@@ -908,27 +908,15 @@ body.modo-simple .toggle:has(#asiste),body.modo-simple .tg-comp,body.modo-simple
       await adjuntarComprobante();
       await tocar('#ok-pago', { despues: 1800 });
       await decir(n, 'La compra queda registrada y un voluntario la aprueba después de controlar el pago.', 3400);
-      await recargar('#fin', 3);
+      await recargar('#fin', 3);  // sigue con el panel
     },
-    async n => { // 4. Velas
-      await decir(n, 'Quien no puede ir, puede colaborar prendiendo velas.', 2400);
-      await tocar('#p-inicio [data-ir="p-vela"]');
-      await tocar('#mas-v'); await tocar('#ok-vela-cant');
-      await escribir('#v-nombre', 'Elena Paz'); await escribir('#v-tel', '11 2233 4455'); await escribir('#v-email', 'elena.paz@gmail.com');
-      await tocar('#ok-vela');
-      await tocar('input[name=pago][value=mp]', { despues: 1200 });
-      if ($('#modal-mp.ver')) await tocar('#mp-ir', { despues: 1500 });
-      await tocar('#dmp-ok', { despues: 1800 });
-      await decir(n, 'Recibe su comprobante de donación y el contador de velas del inicio se actualiza.', 3200);
-      await recargar('#fin-vela', 4);
-    },
-    async n => { // 5. Panel
+    async n => { // 4. Panel
       await decir(n, 'Ahora, el lado de los organizadores: un panel protegido con PIN.', 2600);
       await tocar('#menu-btn'); await tocar('#menu-entrar');
       await escribir('#pin', '1234'); await tocar('#ok-pin', { despues: 600 }); await hasta('#p-vol.activa'); await cargado('#vol-act');
       await decir(n, 'Ven en tiempo real cuántas entradas se vendieron, cuántas están aprobadas y quién ya llegó.', 3600);
     },
-    async n => { // 6. Control de pagos
+    async n => { // 5. Control de pagos
       await tocar('#p-vol .abre-menu'); await tocar('[data-menu="p-comp"]', { despues: 600 }); await cargado('#comp-act');
       await decir(n, 'En Control de pagos revisan los cobros del día, con filtros como en Excel.', 2800);
       await tocar('[data-th="fecha"]'); await tocar('#f-pop [data-fecha="hoy"]', { despues: 1000 });
@@ -940,17 +928,13 @@ body.modo-simple .toggle:has(#asiste),body.modo-simple .tg-comp,body.modo-simple
       await esperar(2600);
       await conConfirmar(() => tocar('#mc-ok', { despues: 600 })); await cargado('#comp-act');
     },
-    async n => { // 7. Puerta
+    async n => { // 6. Puerta
       await tocar('#p-comp .abre-menu'); await tocar('[data-menu="p-vol"]', { despues: 600 }); await cargado('#vol-act');
       await decir(n, 'El día del evento, en la puerta se busca a cada persona y se marca su llegada.', 2600);
       await escribir('#vol-buscar', 'Carla');
       const t = await hasta('#vol-lista .tilde'); await tocar(t, { despues: 1500 });
-      await decir(n, 'Así saben en todo momento cuántos llegaron.', 2400);
+      await decir(n, 'Así saben en todo momento cuántos llegaron. Y toda la información se exporta a Excel.', 3400);
       await escribir('#vol-buscar', '');
-    },
-    async n => { // 8. Velas
-      await tocar('#p-vol .abre-menu'); await tocar('[data-menu="p-velas-vol"]', { despues: 600 }); await cargado('#vv-act');
-      await decir(n, 'Y tienen el reporte de velas y donaciones, y todo exportable a Excel.', 3600);
     }
   ];
 
